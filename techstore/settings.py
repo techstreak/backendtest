@@ -14,14 +14,40 @@ from pathlib import Path
 
 
 import os
+# Configure Django App for Heroku.
+import django_heroku
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+import dj_database_url
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
+# reading .env file
+environ.Env.read_env()
+
+DATABASES = {
+    'default': dj_database_url.config(default=env('DATABASE_URL'))
+}
+
+# other settings...
+
+django_heroku.settings(locals())
+
+
+
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 # Ensure STATIC_ROOT exists
 if not os.path.exists(STATIC_ROOT):
     os.makedirs(STATIC_ROOT)
+
+# Simplified static file serving.
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
@@ -64,6 +90,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 
