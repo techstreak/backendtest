@@ -16,3 +16,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "techstore.settings")
 application = get_wsgi_application()
 
 app = application
+
+# For Vercel Serverless Functions
+def handler(event, context):
+    return app(event, context)
+
+
